@@ -1,0 +1,15 @@
+V "GNAT Lib v10"
+M P W=b
+P ZX
+
+RN
+
+U factorial_recursivo%b	factorial_recursivo.adb	eb5dc12e NE OO SU IL
+
+D factorial_recursivo.adb  20200703020340 eb5dc12e factorial_recursivo%b
+D system.ads		20200118151414 4635ec04 system%s
+G a e
+G c Z b b [factorial_recursivo standard 1 11 none]
+X 1 factorial_recursivo.adb
+1U11*factorial_recursivo 1b11 4l5 4t24
+
