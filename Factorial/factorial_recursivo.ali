@@ -1,15 +1,59 @@
-V "GNAT Lib v10"
+V "GNAT Lib v8"
 M P W=b
 P ZX
 
 RN
+RV NO_IO
+RV NO_RECURSION
+RV SPARK_05
 
-U factorial_recursivo%b	factorial_recursivo.adb	eb5dc12e NE OO SU IL
+U factorial_recursivo%b	factorial_recursivo.adb	4956ff21 NE OO SU IL
+W ada%s			ada.ads			ada.ali
+W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
 
-D factorial_recursivo.adb  20200703020340 eb5dc12e factorial_recursivo%b
-D system.ads		20200118151414 4635ec04 system%s
-G a e
-G c Z b b [factorial_recursivo standard 1 11 none]
-X 1 factorial_recursivo.adb
-1U11*factorial_recursivo 1b11 4l5 4t24
+D ada.ads		20200304083000 76789da1 ada%s
+D a-except.ads		20200304083000 291912d5 ada.exceptions%s
+D a-inteio.ads		20200304083000 f64b89a4 ada.integer_text_io%s
+D a-ioexce.ads		20200304083000 e4a01f64 ada.io_exceptions%s
+D a-stream.ads		20200304083000 119b8fb3 ada.streams%s
+D a-tags.ads		20200304083000 491b781d ada.tags%s
+D a-textio.ads		20200304083000 881db35a ada.text_io%s
+D a-tiinio.ads		20200304083000 aa04e5d6 ada.text_io.integer_io%s
+D a-unccon.ads		20200304083000 0e9b276f ada.unchecked_conversion%s
+D factorial_recursivo.adb  20200704050946 3700c5df factorial_recursivo%b
+D interfac.ads		20200304083000 5ab55268 interfaces%s
+D i-cstrea.ads		20200304083000 e53d8b8e interfaces.c_streams%s
+D system.ads		20200304083000 4635ec04 system%s
+D s-crtl.ads		20200304083000 0ebbdb71 system.crtl%s
+D s-exctab.ads		20200304083000 54135002 system.exception_table%s
+D s-ficobl.ads		20200304083000 078245e4 system.file_control_block%s
+D s-parame.ads		20200304083000 f896c45c system.parameters%s
+D s-secsta.ads		20200304083000 283dec34 system.secondary_stack%s
+D s-soflin.ads		20200304083000 a7318a92 system.soft_links%s
+D s-stache.ads		20200304083000 a37c21ec system.stack_checking%s
+D s-stalib.ads		20200304083000 09bd3940 system.standard_library%s
+D s-stoele.ads		20200304083000 2dc34a04 system.storage_elements%s
+D s-traent.ads		20200304083000 005bf670 system.traceback_entries%s
+D s-unstyp.ads		20200304083000 34867c83 system.unsigned_types%s
+D s-wchcon.ads		20200304083000 1b7d22d2 system.wch_con%s
+X 1 ada.ads
+16K9*Ada 20e8 10|2r6 3r6 7r29 8r33
+X 3 a-inteio.ads
+18K13*Integer_Text_IO[8|46] 10|3w10 8r37
+X 7 a-textio.ads
+49K13*Text_IO 471e16 10|2w10 7r33
+166U14*New_Line 10|31s13 33s13
+X 8 a-tiinio.ads
+66U14*Put 10|30s17[3|18] 32s17[3|18]
+X 10 factorial_recursivo.adb
+5U11*factorial_recursivo 5b11 35l5 35t24
+7K13 Console=7:33 31r5 33r5
+8K13 Int_Console=8:37 30r5 32r5
+11i5 a{integer} 29r10
+12i5 b{integer} 29r12
+13i5 c{integer} 29m5 30r21
+14i5 d{integer} 32r31
+17V14 Factorial{integer} 17b14 17>25 22s21 24l9 24t18 32s21
+17i25 N{integer} 19r8 22r17 22r32
 

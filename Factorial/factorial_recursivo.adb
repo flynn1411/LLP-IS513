@@ -1,4 +1,35 @@
+--Agregado de Librerías
+with Ada.Text_IO;
+with Ada.Integer_Text_IO;
+
 procedure factorial_recursivo is
+    --Renombramiento de Paquetes para un uso mas sencillo
+    package Console renames Ada.Text_IO;
+    package Int_Console renames Ada.Integer_Text_IO;
+
+    --Declaración de varaibles
+    a : Integer :=2;
+    b : Integer :=5;
+    c : Integer;
+    d : Integer :=5;
+
+    --Declaración de Funciones
+    function Factorial (N : Integer) return Integer is
+    begin
+    if N = 1 then
+        return 1;
+    else
+        return (N * Factorial (N - 1));
+    end if;
+    end Factorial;
+
+--Proceso a seguir
 begin
-    null;
+
+    c := a+b;
+    Int_Console.Put(c);
+    Console.New_Line;
+    Int_Console.Put(Factorial(d));
+    Console.New_Line;
+
 end factorial_recursivo;
