@@ -14,13 +14,14 @@ procedure factorial_recursivo is
     d : Integer :=5;
 
     --Declaración de Funciones
-    function Factorial (N : Integer) return Integer is
+    function Factorial (n : Integer) return Integer is
     begin
-    if N = 1 then
-        return 1;
-    else
-        return (N * Factorial (N - 1));
-    end if;
+        
+        if n <= 1 then
+            return 1;
+        else
+            return (n * Factorial (n - 1));
+        end if;
     end Factorial;
 
 --Proceso a seguir
