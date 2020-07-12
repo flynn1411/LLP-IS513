@@ -1,0 +1,17 @@
+{
+    "+":"operador de suma",
+    "-":"operador de resta",
+    "*":"operador de multiplicación",
+    "/":"operador de división",
+    "%":"operador módulo",
+    "not":"booleano de negación",
+    "and":"booleano de conjunción",
+    "or":"booleano de disyunción",
+    "True":"literal booleano de verdadero",
+    "False":"literal booleano de falso",
+    "def":"declaración de función",
+    "class":"declaración de clase",
+    "if":"bucle si",
+    "else":"bucle si-no",
+    "elif":"bucle si-no si"
+}

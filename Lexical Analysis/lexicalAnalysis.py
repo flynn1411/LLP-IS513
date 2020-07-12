@@ -82,7 +82,7 @@ class InformalTokenParser:
             if len(token) > 0:
 
                 #Es un identificador de usuario
-                if re.match(r"^[a-zA-Z][a-zA-Z0.9]*$",token):
+                if re.match(r"^[a-zA-Z][a-zA-Z0-9\_\-]*$",token):
                     result += [["Se reconoce el identificador de usuario: ","%s"%token]]
 
                 #Es un operador de asignación
@@ -109,6 +109,7 @@ class InformalTokenParser:
                             token
                         )
                     )
+        return result
 
 
     def searchTokenLine(self, token):
@@ -118,7 +119,7 @@ class InformalTokenParser:
         f = open(self.fileName, "r")
 
         for line in f:
-            print("\t\tDebug: %s" % line)
+            #print("\t\tDebug: %s" % line)
             errorLine += 1
             
             if re.match(r"^.*%s.*$" % self.prevent(token), line):
@@ -130,7 +131,7 @@ class InformalTokenParser:
 
     def prevent(self, token):
 
-        if re.match(r"^[\+\*\.\(\)\{\}\[\]]$",token):
+        if re.match(r"[\+\*\.\(\)\{\}\[\]]+",token):
             return "\\%s" % token
         return token
 
@@ -141,5 +142,5 @@ print("Programa encontrado:")
 print ("\t%s\n" % parser.text)
 
 lexicalAnalysis = parser.lexicalAnalysis()
-print("El análisi léxico del software es:")
+print("El análisis léxico del software es:")
 print(tabulate(lexicalAnalysis))
