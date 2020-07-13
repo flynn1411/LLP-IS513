@@ -10,7 +10,7 @@
 
 #sudo -H pip3 install tabulate
 from tabulate import tabulate
-import sys, re
+import sys, re, json
 
 class InformalTokenParser:
 
@@ -79,7 +79,7 @@ class InformalTokenParser:
         text = re.sub(r"!=", " != ", text)
         text = re.sub(r"\"\"\"", " \"\"\" ", text)
         text = re.sub(r"#", " # ", text)
-        text = re.sub(r"\n", " endl ", text)
+        text = re.sub(r"\n", " newLine ", text)
         text = re.sub(r",", " , ", text)
         text = re.sub(r"\s+"," ", text)
         text = re.sub(r"%"," % ", text)
@@ -92,6 +92,10 @@ class InformalTokenParser:
         result = []
         text = self.text
 
+        f = open("TokenLibrary/%s/%sTokens.json"%(self.language, self.language),"r")
+        tokenLibrary = json.load(f)
+        f.close()
+
         """
             Identifican si actualmente se encuentran en un:
                 -Comentario para ignorar el texto entre el mismo
@@ -99,13 +103,19 @@ class InformalTokenParser:
                 -Parametros de fucnión para identificarlos
                 -Declaraciónes de Clases o funciones para identificar sus partes
         """
-        onComment = False
+        onLineComment = False
+        onMultiLinesComment = False
         onString = False
         onParameter = False
-        onDeclaration = False
+        onFuncDeclaration = False
+        onClassDeclaration = False
 
         #En caso de encontrarse una cadena:
         currentString="";
+
+        functions = {}
+        currentFuncName="";
+        currentClassName="";
 
         tokens = re.split(r"\s",text)
 
@@ -114,47 +124,112 @@ class InformalTokenParser:
             token = ("%s".strip() % token).strip()
             if len(token) > 0:
 
-                if onComment or onString:
-                    currentString = "%s\s%s"%(currentString, token)
+                #De estar en un comentario, se ignora 
+                if onLineComment:
+                    if (token == "newLine"):
+                        result.append(["Se reconoce un comentario de una línea: ","#%s"%(currentString)])
+                        onLineComment = False
+                        currentString= ""
+                    else:
+                        currentString = "%s %s"%(currentString, token)
+                
+                #De estar en un comentario, se ignora 
+                elif onMultiLinesComment:
+                    if (token in tokenLibrary) and (tokenLibrary[token] == "Comentarios"):
+                        result.append(["Se reconoce un comentario de múltiples líneas: ","%s\"\"\""%(currentString)])
+                        onMultiLinesComment = False
+                        currentString = ""
 
-                elif onParameter:
-                    pass
+                    elif(token == "newLine"):
+                        currentString = "%s\n"%(currentString)
 
-                elif onDeclaration:
-                    pass
+                    else:
+                        currentString = "%s %s"%(currentString, token)
+                
+                #De estar en una cadena, se ignora (por los momentos)
+                elif onString:
+                    if token == "\"\"":
+                        result.append(["Se reconoce un literal de cadena: ", "%s"%(currentString)])
+                        onString = False
+                        currentString = ""
 
-                else:
-                    #Es una cadena
-                    if re.match(r"^\"\"$", token):
-                        if not onString:
-                            onString = True
-                        else:
-                            result.append(["Se reconoce una cadena de texto: ","%s"%currentString])
+                    elif token=="newLine":
+                        currentString = "%s\n"%(currentString)
+
+                    else:
+                        currentString = "%s %s"%(currentString, token)
+
+                #Si se encuentra en la decalración de una función
+                elif onFuncDeclaration:
+                    if onParameter:
+                        if re.match(r"^\)$",token):
+                            result += [["Se reconoce el final de argumentos de la función '%s': "%(currentFuncName),"%s"%token]]
+                            onParameter = False
+                        
+                        elif re.match(r"^,$",token):
+                            result += [["Se reconoce un separador de argumentos de la función '%s': "%(currentFuncName),"%s"%token]]
+                        
+                        elif re.match(r"^[a-zA-Z][a-zA-Z0-9\_\-]*$",token):
+                            result += [["Se reconoce el identificador de argumento para la función '%s': "%(currentFuncName),"%s"%token]]
+
+                    elif re.match(r"^:$",token):
+                        onFuncDeclaration = False
+                        result.append(["Se reconoce el comienzo de codigo de la función '%s'"%(currentFuncName),"%s"%(token)])
+                        currentFuncName = ""
+
+                    elif re.match(r"^[a-zA-Z][a-zA-Z0-9\_\-]*$",token):
+                        result += [["Se reconoce el identificador de función: ","%s"%token]]
+                        currentFuncName = token
+                        functions[token] = "%s"%token
+
+                    elif re.match(r"^\($",token):
+                        result += [["Se reconoce el comienzo de argumentos de la función '%s': "%(currentFuncName),"%s"%token]]
+                        onParameter = True
+
+                elif onClassDeclaration: pass
+
+                elif re.match(r"^newLine*$",token): pass
+
+                #Si el token se encuentra en la libreria de tokens
+                elif token in tokenLibrary:
+                    if tokenLibrary[token] == "Comentario":
+                        onLineComment = True
+
+                    elif tokenLibrary[token] == "Comentarios":
+                        onMultiLinesComment = True
+                        currentString = "\"\"\""
+                    
+                    elif tokenLibrary[token] == "declaración de función":
+                        onFuncDeclaration = True
+                        result.append(["Se reconoce una %s"%(tokenLibrary[token]),"%s"%(token)])
+
+                    elif tokenLibrary[token] == "declaración de clase":
+                        onClassDeclaration = True
+                        result.append(["Se reconoce una %s"%(tokenLibrary[token]),"%s"%(token)])
+
+                    else:
+                        result.append(["Se reconoce un %s: "%(tokenLibrary[token]), "%s"%(token)])
+
+                
+                elif re.match(r"^[a-zA-Z][a-zA-Z0-9\_\-]*$",token):
+                    if token in functions:
+                        result.append(["Se reconoce el llamado a la función '%s': "%(functions[token]),"%s"%token])
 
                     #Es un identificador de usuario
-                    elif re.match(r"^[a-zA-Z][a-zA-Z0-9\_\-]*$",token):
-                        result += [["Se reconoce el identificador de usuario: ","%s"%token]]
-
-                    #Es un operador de asignación
-                    elif re.match(r"^=$",token):
-                        result += [["Se reconoce el operador de asignación: ","%s"%token]]
-
-                    #Es un número flotante
-                    elif re.match(r"^\d+\.\d+$",token):
-                        result += [["Se reconoce el número flotante: ","%s"%token]]
-
-                    #Es un número entero
-                    elif re.match(r"^\d+$",token):
-                        result += [["Se reconoce el número entero: ","%s"%token]]
-
-                    #Es un token desconcido
                     else:
-                        quit(
+                        result.append(["Se reconoce el identificador de usuario: ","%s"%token])
+
+                """
+                else:
+                    quit(
                             "Error: \n\tSe ha encontrado un token desconocido en la línea '%d': '%s'\n\n" %(
                                 self.searchTokenLine(token),
                                 token
                             )
-                        )
+                        )"""
+
+        self.text = re.sub(r" newLine ", "", self.text)
+                
         return result
 
 
