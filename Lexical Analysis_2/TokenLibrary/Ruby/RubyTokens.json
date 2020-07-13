@@ -17,6 +17,6 @@
     "#":"Comentario",
     "\"\"\"":"Comentarios",
     "\"\"":"Cadena",
-    "print":"impresión a consola",
+    "puts":"impresión a consola",
     "return": "retorno de funcíon"
 }

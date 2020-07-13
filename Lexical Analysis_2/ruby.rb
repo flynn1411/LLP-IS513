@@ -4,6 +4,11 @@
  #hola
 uncomment/
 
+=begin
+dadfniafniafaffa
+Comentarios de múltiples lineas tambieeeen
+=end
+
 def factorial n
     if n<2
         return 1

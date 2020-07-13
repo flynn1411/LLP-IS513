@@ -1,0 +1,23 @@
+{
+    "+":"operador de suma",
+    "-":"operador de resta",
+    "*":"operador de multiplicación",
+    "/":"operador de división",
+    "%":"operador módulo",
+    "not":"booleano de negación",
+    "and":"booleano de conjunción",
+    "or":"booleano de disyunción",
+    "True":"literal booleano",
+    "False":"literal booleano",
+    "def":"declaración de función",
+    "class":"declaración de clase",
+    "if":"bucle si",
+    "else":"bucle si-no",
+    "elif":"bucle si-no si",
+    "#":"Comentario",
+    "\"\"\"":"Comentarios",
+    "\"":"Cadena",
+    "print":"impresión a consola",
+    "return": "retorno de funcíon",
+    "(":"abrir parentesis"
+}

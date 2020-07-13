@@ -43,8 +43,11 @@ class InformalTokenParser:
         #Analiza que tipo de lenguaje se analizará
         if re.match(r"[A-Za-z0-9\_\-]+\.py", self.fileName):
             self.language = "Python"
+            self.multiCommentEnd = "\"\"\""
+
         elif re.match(r"[A-Za-z0-9\_\-]+\.rb", self.fileName):
             self.language = "Ruby"
+            self.multiCommentEnd = "=end"
 
         else:
             self.language = "Unknown"
@@ -77,13 +80,15 @@ class InformalTokenParser:
         text = re.sub(r"<=", " >= ", text)
         text = re.sub(r"==", " == ", text)
         text = re.sub(r"!=", " != ", text)
-        text = re.sub(r"\"\"\"", " \"\"\" ", text)
+        text = re.sub(r"\""," \" ", text)
+        text = re.sub(r"^(\" \"\")|(\"\" \")|(\" \" \")$", " \"\"\" ", text)
         text = re.sub(r"#", " # ", text)
         text = re.sub(r"\n", " newLine ", text)
         text = re.sub(r",", " , ", text)
         text = re.sub(r"\s+"," ", text)
-        text = re.sub(r"%"," % ", text)
-        text = re.sub(r" \"\" "," \"\" ", text)
+        text = re.sub(r"^%d$"," %d ", text)
+        text = re.sub(r"^%s$"," %s ", text)
+        text = re.sub(r"^%$"," % ", text)
         self.text = ("%s".strip() % text).strip()
 
         return self
@@ -136,7 +141,7 @@ class InformalTokenParser:
                 #De estar en un comentario, se ignora 
                 elif onMultiLinesComment:
                     if (token in tokenLibrary) and (tokenLibrary[token] == "Comentarios"):
-                        result.append(["Se reconoce un comentario de múltiples líneas: ","%s\"\"\""%(currentString)])
+                        result.append(["Se reconoce un comentario de múltiples líneas: ","%s %s"%(currentString, self.multiCommentEnd)])
                         onMultiLinesComment = False
                         currentString = ""
 
@@ -148,8 +153,8 @@ class InformalTokenParser:
                 
                 #De estar en una cadena, se ignora (por los momentos)
                 elif onString:
-                    if token == "\"\"":
-                        result.append(["Se reconoce un literal de cadena: ", "%s"%(currentString)])
+                    if (token in tokenLibrary) and (tokenLibrary[token] == "Cadena"):
+                        result.append(["Se reconoce un literal de cadena: ", "%s \""%(currentString)])
                         onString = False
                         currentString = ""
 
@@ -197,7 +202,11 @@ class InformalTokenParser:
 
                     elif tokenLibrary[token] == "Comentarios":
                         onMultiLinesComment = True
-                        currentString = "\"\"\""
+                        currentString = token
+
+                    elif tokenLibrary[token] == "Cadena":
+                        onString = True
+                        currentString = "\""
                     
                     elif tokenLibrary[token] == "declaración de función":
                         onFuncDeclaration = True
@@ -228,7 +237,7 @@ class InformalTokenParser:
                             )
                         )"""
 
-        self.text = re.sub(r" newLine ", "", self.text)
+        self.text = re.sub(r"newLine", "", self.text)
                 
         return result
 
@@ -262,7 +271,8 @@ parser = (InformalTokenParser()).read().preprocess()
 parser.help()
 
 print("Programa encontrado:")
-print ("\t%s\n" % parser.text)
+cleanText = re.sub(r"newLine", "", parser.text)
+print ("\t%s\n" % cleanText)
 
 lexicalAnalysis = parser.lexicalAnalysis()
 print("El análisis léxico del software es:")
