@@ -1,0 +1,14 @@
+entero
+=
+1
+;
+flotante
+=
+1.0
+;
+assignment_conEntero
+=
+entero
+assignment_conFlotante
+=
+flotante
