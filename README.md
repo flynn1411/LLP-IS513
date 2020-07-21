@@ -1,3 +1,5 @@
+Si desean agregar código creado en la clase no duden en hacer un pull request para verificarlo y agregarlo.
+
 # LLP-IS513
 
 Changelog:
